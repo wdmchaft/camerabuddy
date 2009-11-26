@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>outputDirectoryFormat</key>
+	<string>yyyy/MMMM/yyyy.MM.dd</string>
+	<key>overrideLocale</key>
+	<string>en_US</string>
+	<key>makeGroupWriteable</key>
+	<true/>
+	<key>moveFiles</key>
+	<false/>
+	<key>outputDirectory</key>
+	<string>~/Desktop</string>
+	<key>rotatePhotos</key>
+	<true/>
+	<key>synchronizeClock</key>
+	<true/>
+	<key>adjustPhotoTime</key>
+	<true/>
+</dict>
+</plist>

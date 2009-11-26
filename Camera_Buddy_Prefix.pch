@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'Camera Buddy' target in the 'Camera Buddy' project
+//
+
+#ifdef __OBJC__
+    #import <Cocoa/Cocoa.h>
+#endif
