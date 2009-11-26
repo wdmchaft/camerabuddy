@@ -11,11 +11,11 @@
 			<string key="com.apple.automator.AutomatorPalette">15</string>
 		</dictionary>
 		<array class="NSMutableArray" key="IBDocument.EditedObjectIDs">
-			<integer value="57"/>
-			<integer value="580"/>
-			<integer value="587"/>
-			<integer value="534"/>
 			<integer value="561"/>
+			<integer value="587"/>
+			<integer value="580"/>
+			<integer value="534"/>
+			<integer value="57"/>
 		</array>
 		<array key="IBDocument.PluginDependencies">
 			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -2315,9 +2315,9 @@
 				<string key="559.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="56.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="1" key="56.ImportedFromIB2"/>
-				<string key="560.IBEditorWindowLastContentRect">{{658, 664}, {435, 126}}</string>
+				<string key="560.IBEditorWindowLastContentRect">{{504, 659}, {435, 126}}</string>
 				<string key="560.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="560.IBWindowTemplateEditedContentRect">{{658, 664}, {435, 126}}</string>
+				<string key="560.IBWindowTemplateEditedContentRect">{{504, 659}, {435, 126}}</string>
 				<integer value="1" key="560.NSWindowTemplate.visibleAtLaunch"/>
 				<string key="560.editorWindowContentRectSynchronizationRect">{{238, 285}, {480, 360}}</string>
 				<string key="560.windowTemplate.maxSize">{3.40282e+38, 3.40282e+38}</string>
@@ -2387,7 +2387,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">713</int>
+			<int key="maxID">715</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">

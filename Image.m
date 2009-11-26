@@ -68,8 +68,8 @@ NSImage* normalizeExifOrientation(NSImage* existingImage, NSNumber* exifOrientat
     
   [tform concat];
   [existingImage drawAtPoint:NSZeroPoint fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
+  [tform release];
   [rotatedImage unlockFocus];
-  [existingImage release];
     
   return rotatedImage;
 }
@@ -182,7 +182,9 @@ NSImage* normalizeExifOrientation(NSImage* existingImage, NSNumber* exifOrientat
   [self openToEdit];
   NSNumber* orientation = [NSNumber numberWithInt:[[mProperties objectForKey:(NSString*)kCGImagePropertyOrientation] intValue]];
   //NSLog(@"%@: %@", mPath, orientation);
-  mImage = normalizeExifOrientation(mImage, orientation);
+  NSImage* rotated = normalizeExifOrientation(mImage, orientation);
+  [mImage autorelease];
+  mImage = rotated;
   NSNumber* newOrientation = [NSNumber numberWithInt:1];
   NSMutableDictionary* tiffProperties = [mProperties objectForKey:(NSString*)kCGImagePropertyTIFFDictionary];
   overwriteIfExists(mProperties, (NSString*)kCGImagePropertyOrientation, newOrientation);

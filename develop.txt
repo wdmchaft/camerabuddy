@@ -1,0 +1,76 @@
+Camera Buddy 
+============
+
+Development Instructions
+------------------------
+
+Camera Buddy is a small application to download photos from your camera. It can
+place photos nicely arranged in directory levels using date time stamps.
+Optionally, it can rotate your photos and adjust the time they were taken.
+
+1. Repository
+
+This application in maintained with "git". Before doing anything to a locally
+checked-out version, make sure you pull all the changes from the master
+location.
+
+$ git pull
+
+2. Tagging
+
+Tagging is important everytime a release is done. To tag, issue:
+
+$ git tag (-s) <tagname> 
+
+If you want to tag the head version of the current branch.
+
+$ git tag (-s) <tagname> <abbreviated-commit>
+
+If you want to tag a particular commit. You can get a list of commits with:
+
+$ git log --format=format:"%h %s"
+
+The "-s" flag tells git to sign the commit.
+
+After tagging is done, you need to recompile the package, so the "About" window
+is updated correctly.
+
+3. Packaging
+
+After the application has been tested, you can distributed in the format of a
+DMG image, which is the standard for OSX applications.
+
+A template is shipped with the package. Look for '.dmg' files in the current
+directory. If you cannot find any, you can create a new template following
+the instructions in this webpage: http://digital-sushi.org/entry/how-to-create-a-disk-image-installer-for-apple-mac-os-x/
+
+The Background to be used is based on Pixelmator's format. You have to convert
+it into a jpeg and follow the instructions on the link above to set the
+backgrond of the installer window.
+
+After creating the template, in case you build a new version of the software,
+you can update the application like this:
+
+$ hdiutil convert CameraBuddy.dmg -format UDSP -o CameraBuddy
+$ rm -f CameraBuddy.dmg
+$ hdiutil mount CameraBuddy.sparseimage
+$ rm -rf /Volumes/CameraBuddy/Camera Buddy.app/Contents 
+$ cp -r 'build/Release/Camera Buddy.app/Contents' '/Volumes/CameraBuddy/Camera Buddy.app/Contents' 
+$ hdiutil unmount '/Volumes/Camera Buddy'
+$ hdiutil convert CameraBuddy.sparseimage -format UDBZ -o CameraBuddy.dmg
+
+The package needs signing for Sparkle updates. Here is how to do that:
+
+$ openssl dgst -sha1 -binary < <dsa-private-key> | openssl dgst -dss1 -sign CameraBuddy.dmg | openssl enc -base64
+
+And finally, you have to move it into a "versioned" name. Check the package
+tags and choose an appropriate setting.
+
+$ cp CameraBuddy.dmg CameraBuddy-X.Y.Z.dmg
+
+Do *not* move the DMG file as we normally keep it into the repository so it
+works as a template in future updates.
+
+--
+Andre Anjos
+26/November/2009

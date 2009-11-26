@@ -55,9 +55,11 @@
     NSArray* files = [device valueForKey:@"mediaFiles"];
     
     //first, we check to see if we possess an overwritten icon file for this device
-    NSString* customIcon = [[NSBundle mainBundle] pathForResource:device.name ofType:@"icns"];
+    //NSLog(@"updating with %@...", device.name);
+    NSString* customIconFile = [device.name stringByAppendingString:@".icns"];
+    NSString* customIconPath = [[NSBundle mainBundle] pathForResource:customIconFile ofType:@""];
     NSImage* newIcon = NULL;
-    if (customIcon != nil) [[NSImage alloc] initWithContentsOfFile:customIcon];
+    if (customIconPath != nil) newIcon = [[NSImage alloc] initWithContentsOfFile:customIconPath];
     else newIcon = [[NSImage alloc] initWithCGImage:device.icon size:NSZeroSize];
     
     [NSApp setApplicationIconImage:newIcon];
