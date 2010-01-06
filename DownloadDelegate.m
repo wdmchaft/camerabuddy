@@ -74,7 +74,7 @@
   if (![mRequestQueue count]) {
     [progressIndicator setMinValue:0.0];
     [progressIndicator setDoubleValue:0.0];
-    [statusText setStringValue:[NSString stringWithFormat:@"0/0 Mb"]];
+    [statusText setStringValue:[NSString stringWithFormat:@"Assessing work to be done..."]];
     [NSApp beginSheet:progressWindow modalForWindow:mainWindow modalDelegate:nil didEndSelector:nil contextInfo:nil];
   }
   
@@ -83,6 +83,7 @@
   [progressIndicator setMaxValue:total];
   [self willChangeValueForKey:@"requestQueue"];
   [mRequestQueue addObject:file];
+  mTotalCount = [mRequestQueue count];
   [self didChangeValueForKey:@"requestQueue"];
 }
 
@@ -94,11 +95,11 @@
 {
   const unsigned long Mb = 1024 * 1024;
   [progressIndicator setDoubleValue:[progressIndicator doubleValue] + [file fileSize]];
-  [statusText setStringValue:[NSString stringWithFormat:@"%.0f/%.0f Mb", [progressIndicator doubleValue]/Mb,
-    [progressIndicator maxValue]/Mb ] ];
   [self willChangeValueForKey:@"requestQueue"];
   [mRequestQueue removeObject:file];
   [self didChangeValueForKey:@"requestQueue"];
+  [statusText setStringValue:[NSString stringWithFormat:@"%d/%d files (%.0f/%.0f Mb)\n%@", (mTotalCount - [mRequestQueue count]), mTotalCount, 
+    [progressIndicator doubleValue]/Mb, [progressIndicator maxValue]/Mb, [file.name lowercaseString]]];
   if (![mRequestQueue count]) {
     BOOL clockSynchronized = [self synchronizeClock:file.device]; //try to synchronize the clock of this camera
     [NSApp endSheet:progressWindow];
@@ -111,7 +112,20 @@
 
   NSURL* downloadPath = [options valueForKey:ICDownloadsDirectoryURL];
   Image* image = [[Image alloc] initWithURL:[downloadPath URLByAppendingPathComponent:[options valueForKey:ICSavedFilename]]];
+  Image* movie = nil;
+  if ([file.UTI isEqual:(NSString*)kUTTypeMovie]) {
+    movie = image;
+    NSURL* movieThumbnail = [downloadPath URLByAppendingPathComponent:[[[options valueForKey:ICSavedFilename] stringByDeletingPathExtension] stringByAppendingPathExtension:@"THM"]];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:[movieThumbnail path]]) {
+      image = [[Image alloc] initWithURL:movieThumbnail];
+    }
+    else {
+     image = nil;
+    }
+  }
+  
   [image makeNameLowerCaseFileName];
+  [movie makeNameLowerCaseFileName];
 
   //update the thumbnail on the progress window...
   //NSRect thumbnailSize = [thumbnail bounds];
@@ -126,19 +140,27 @@
   [thumbnail setImage:[image getImage]];
   [thumbnail displayIfNeeded];
 
-  //adjust the photo time, if requested
+  //adjust the file time, if requested
   if (isOn(adjustPhotoTime)) {
     int value = [adjustPhotoTimeBySeconds doubleValue];
     [image adjustPhotoTimeBy:[NSNumber numberWithInt:value]];
   }
 
-  //adjust the reading permissions
-  if (isOn(makeGroupWriteable)) [image makeGroupWriteable];
-  else [image makeReadeableToAll];
-    
   //finally, we save the image, releasing internal allocations that avoid saving too many times.
   [image save];
+
+  //adjust the reading permissions on the saved file!
+  if (isOn(makeGroupWriteable)) {
+    [image makeGroupWriteable];
+    [movie makeGroupWriteable];
+  }
+  else {
+    [image makeReadeableToAll];
+    [movie makeReadeableToAll];
+  }
+  
   [image release];
+  [movie release];
 }
 
 - (BOOL)synchronizeClock:(ICCameraDevice*)device

@@ -8,13 +8,14 @@
 
 #import <Cocoa/Cocoa.h>
 
+typedef enum SupportedFileTypes SupportedFileTypes;
 
 @interface Image : NSObject {
 
   NSURL *mPath;
   NSImage *mImage;
   NSMutableDictionary *mProperties;
-  CFStringRef mImageType; 
+  CFStringRef mImageType;
   BOOL mImageNeedsSaving; 
 }
 
@@ -49,7 +50,7 @@
 - (void)makeReadeableToAll;
 
 // opens the pointed image for editing
-- (void)openToEdit;
+- (BOOL)openToEdit;
 
 // save a currently opened image, overwriting the existing image
 - (void)save;

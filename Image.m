@@ -80,13 +80,14 @@ NSImage* normalizeExifOrientation(NSImage* existingImage, NSNumber* exifOrientat
 
 - (id)initWithURL:(NSURL*)path {
 
+
   if ( self = [super init] ) {
     mPath = [path copy];
     mImage = NULL; 
     mProperties = NULL;
     mImageType = NULL;
     mImageNeedsSaving = NO;
-  }
+   }
 
   return self;
 
@@ -121,16 +122,16 @@ NSImage* normalizeExifOrientation(NSImage* existingImage, NSNumber* exifOrientat
   mPath = [destinationURL copy];
 }
 
-- (void)openToEdit
+- (BOOL)openToEdit
 {
-  if (mImage) return; //do not open the same image again
-  //NSLog(@"Opening to edit image %@", mPath);
+  if (mImage) return YES; //do not open the same image again
+  
   CGImageSourceRef sourceRef = CGImageSourceCreateWithURL((CFURLRef)mPath, NULL);
   
   //get the image itself
   CGImageRef imageRef = CGImageSourceCreateImageAtIndex(sourceRef, 0, NULL);
   mImage = [[NSImage alloc] initWithCGImage:imageRef size:NSZeroSize];
-  CFRelease(imageRef); //?
+  if (imageRef) CFRelease(imageRef); //?
 
   //get image properties
   CFDictionaryRef properties = CGImageSourceCopyPropertiesAtIndex(sourceRef, 0, NULL);
@@ -141,6 +142,7 @@ NSImage* normalizeExifOrientation(NSImage* existingImage, NSNumber* exifOrientat
   CFRelease(sourceRef);
   
   mImageNeedsSaving = NO;
+  return YES;
 }
 
 - (void)save
@@ -179,7 +181,7 @@ NSImage* normalizeExifOrientation(NSImage* existingImage, NSNumber* exifOrientat
 
 - (void)normalizeExifOrientation
 {
-  [self openToEdit];
+  if (![self openToEdit]) return;
   NSNumber* orientation = [NSNumber numberWithInt:[[mProperties objectForKey:(NSString*)kCGImagePropertyOrientation] intValue]];
   //NSLog(@"%@: %@", mPath, orientation);
   NSImage* rotated = normalizeExifOrientation(mImage, orientation);
@@ -194,7 +196,7 @@ NSImage* normalizeExifOrientation(NSImage* existingImage, NSNumber* exifOrientat
 
 - (void)adjustPhotoTimeBy:(NSNumber*)seconds
 {
-  [self openToEdit];
+  if (![self openToEdit]) return;
   NSMutableDictionary* exifProperties = [mProperties objectForKey:(NSString*)kCGImagePropertyExifDictionary];
   NSMutableDictionary* tiffProperties = [mProperties objectForKey:(NSString*)kCGImagePropertyTIFFDictionary];
   NSString* dateString = [exifProperties objectForKey:(NSString*)kCGImagePropertyExifDateTimeOriginal];
@@ -237,7 +239,8 @@ NSImage* normalizeExifOrientation(NSImage* existingImage, NSNumber* exifOrientat
 
 - (NSImage*)createThumbnail:(NSNumber*)size
 {
-  [self openToEdit]; //just to create the property dictionary
+  //this method is presently UNUSED, we are currently getting the whole image with [getImage] bellow
+  if (![self openToEdit]) return NULL; //just to create the property dictionary
   CGImageSourceRef sourceRef = CGImageSourceCreateWithURL((CFURLRef)mPath, NULL);
   NSDictionary* dict = [NSDictionary dictionaryWithObject:size forKey:(NSString*)kCGImageSourceThumbnailMaxPixelSize];
   CGImageRef imageRef = CGImageSourceCreateThumbnailAtIndex(sourceRef, 0, (CFDictionaryRef)dict);
@@ -251,7 +254,7 @@ NSImage* normalizeExifOrientation(NSImage* existingImage, NSNumber* exifOrientat
 
 - (NSImage*)getImage
 {
-  [self openToEdit]; //just to create the internal representation
+  if (![self openToEdit]) return NULL; //just to create the property dictionary
   return mImage;  
 }
 

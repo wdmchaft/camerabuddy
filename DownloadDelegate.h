@@ -25,6 +25,7 @@
   IBOutlet NSButton *rotatePhotos;
   NSMutableArray *mOpenCameras;
   NSMutableArray *mRequestQueue;
+  unsigned mTotalCount;
 }
 
 @property(retain) NSMutableArray* openCameras;
