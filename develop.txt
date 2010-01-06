@@ -54,8 +54,8 @@ you can update the application like this:
 $ hdiutil convert CameraBuddy.dmg -format UDSP -o CameraBuddy
 $ rm -f CameraBuddy.dmg
 $ hdiutil mount CameraBuddy.sparseimage
-$ rm -rf /Volumes/CameraBuddy/Camera Buddy.app/Contents 
-$ cp -r 'build/Release/Camera Buddy.app/Contents' '/Volumes/CameraBuddy/Camera Buddy.app/Contents' 
+$ rm -rf '/Volumes/Camera Buddy/Camera Buddy.app/Contents'
+$ cp -r 'build/Release/Camera Buddy.app/Contents' '/Volumes/Camera Buddy/Camera Buddy.app/Contents' 
 $ hdiutil unmount '/Volumes/Camera Buddy'
 $ hdiutil convert CameraBuddy.sparseimage -format UDBZ -o CameraBuddy.dmg
 
